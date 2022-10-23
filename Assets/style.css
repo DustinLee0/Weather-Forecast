@@ -1,0 +1,4 @@
+.header-bg {
+    background-image: linear-gradient(to bottom right, red, yellow);
+    padding: 15px;
+}
