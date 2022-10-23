@@ -1,4 +1,14 @@
+p {
+    font-size: x-large;
+}
+
+label {
+    font-size: 25px;
+}
+
 .header-bg {
-    background-image: linear-gradient(to bottom right, red, yellow);
+    background-image: linear-gradient(to bottom right, rgb(0, 162, 255),rgb(136, 0, 255));
+    font-weight: 600;
+    color: white;
     padding: 15px;
 }
