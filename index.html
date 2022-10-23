@@ -10,12 +10,20 @@
 </head>
 
 <body>
-<h1 class="display-4 text-center header-bg">Weather Forecast</h1>
-<p>Search for a city:</p>
-<input type="search">
-<button>Search</button>
-<div id="card"></div>
+    <h1 class="display-4 text-center header-bg">Weather Forecast</h1>
 
-<script src="./Assets/script.js"></script>
+    <div>
+        <form class="d-flex flex-column align-items-center" onsubmit="">
+            <label for="search-query">Search for a city:</label>
+            <input type="search" class="mt-2" id="search-input">
+            <button type="button" class="mt-2 btn btn-outline-primary" id="search-btn">Search</button>
+        </form>
+    </div>
+    <div id="saved-list"></div>
+    <hr/>
+
+    <div id="card"></div>
+
+    <script src="./Assets/script.js"></script>
 </body>
 </html>
