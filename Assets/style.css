@@ -6,9 +6,45 @@ label {
     font-size: 25px;
 }
 
+ul {
+    list-style: none;
+    margin: 10px;
+}
+
+ul .btn {
+    width: 70%;
+    background-color: rgb(155, 155, 155);
+    margin-bottom: 10px;
+}
+
+ul .btn:hover {
+    background-color: red;
+}
+
 .header-bg {
     background-image: linear-gradient(to bottom right, rgb(0, 162, 255),rgb(136, 0, 255));
     font-weight: 600;
     color: white;
     padding: 15px;
+}
+
+.form-card {
+    border-right: double;
+    border-bottom: double;
+    padding-bottom: 10px;
+    padding-right: 10px;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.current-forecast {
+    border: thick double #32a1ce;
+    margin: 10px;
+    padding: 7px;
+}
+
+.data-content {
+    font-size: 17px;
 }
