@@ -48,3 +48,11 @@ ul .btn:hover {
 .data-content {
     font-size: 17px;
 }
+
+.forecast-card {
+    background-color: green;
+    width: 200px;
+    height: 260px;
+    padding: 10px;
+    margin: 10px;
+}
