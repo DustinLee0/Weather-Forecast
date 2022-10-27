@@ -50,9 +50,9 @@ ul .btn:hover {
 }
 
 .forecast-card {
-    background-color: green;
+    background-color: rgba(0, 109, 143, 0.3);
     width: 200px;
-    height: 260px;
+    height: 232px;
     padding: 10px;
     margin: 10px;
 }

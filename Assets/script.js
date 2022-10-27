@@ -10,15 +10,21 @@ function saveInput(e) {
     e.preventDefault();
     let input = document.querySelector('#search-input');
     let savedInput = input.value;
-
+    
     //save input string and push to an array to store
     localSave.push(savedInput);
     localStorage.setItem('cityWeather', JSON.stringify(localSave));
-
+    
+    clearSearch();
     savedCityList(savedInput);
     getCurrentForecast(savedInput);
-    // get5DayForecast(savedInput);
+    get5DayForecast(savedInput);
+}
 
+function clearSearch() {
+    while (weatherCard.firstChild) {
+        weatherCard.removeChild(weatherCard.children[0])
+    }
 }
 
 // creates list item per city in local storage
@@ -28,7 +34,15 @@ function savedCityList(city) {
     listEl.classList.add('btn', 'btn-primary');
     listCard.appendChild(listEl);
 
+    const btnList = document.querySelector('#saved-list').children;
     //MAKE IF STATEMENT TO CHECK IF SAME CITY IS ENTERED, IT WOULD NOT MAKE ANOTHER DUPLICATE BUTTON
+    console.log(btnList);
+    // for (i = 0; i < btnList.length; i++) {
+    //     console.log(btnList[i].innerHTML)
+    //     if(btnList[i].innerHTML ===  city) {
+
+    //     }
+    // }
 
 }
 
@@ -41,7 +55,6 @@ function getCurrentForecast(input) {
             return response.json();
         })
         .then(function (response) {
-            console.log(response);
             let cityName = response.name;
             let today = new Date().toLocaleDateString();
             let cityIcon = `http://openweathermap.org/img/w/${response.weather[0].icon}.png`;
@@ -81,21 +94,19 @@ function getCurrentForecast(input) {
         });
 }
 
+// SECOND CALL TO GET UVI DATA FROM ONE CALL API 3.0 ENDPOINT
 function oneCallAPI(latitude, longitude) {
     let lat = latitude;
     let long = longitude;
-    console.log(lat)
-    console.log(long)
 
     fetch('https://api.openweathermap.org/data/3.0/onecall?lat=' + lat + '&lon=' + long + '&appid=' + apiKey + '&units=metric')
         .then(function (response) {
             return response.json();
         })
         .then(function (response) {
-            console.log(response)
             let currentCard = document.querySelector('.current-forecast')
             let uvIndex = response.current.uvi;
-            
+
             const newPUVIndex = document.createElement('p');
 
             newPUVIndex.innerHTML = 'UV Index: ' + uvIndex;
@@ -106,36 +117,37 @@ function oneCallAPI(latitude, longitude) {
         .catch(function (err) {
             console.error(err);
         });
-
 }
 
-// SECOND API CALL:  5 day forecast from city search
+// THIRD API CALL:  5 day forecast from city search
 function get5DayForecast(input) {
     fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + input + '&units=metric&appid=' + apiKey)
         .then(function (response) {
             return response.json();
         })
         .then(function (response) {
-            console.log(response);
+            // console.log(response);
+            // iterateForecast(response);
             let forecastDate = response.list[3].dt_txt;;
             let forecastIcon = `http://openweathermap.org/img/w/${response.list[3].weather[0].icon}.png`;
             let forecastTemp = response.list[3].main.temp;
-            let forecastWind = response.list[1].wind.speed;
-            let forecastHumidity = response.list[1].main.humidity;
-            console.log(forecastDate);
-            // console.log(forecastIcon);
-            // console.log(forecastTemp);
-            // console.log(forecastWind);
-            // console.log(forecastHumidity);
+            let forecastWind = response.list[3].wind.speed;
+            let forecastHumidity = response.list[3].main.humidity;
+            let newDate = forecastDate.split(" ");
+            let [year, month, day] = newDate[0].split("-");
+            const resultDate = [month, day, year].join("/")
+
             const newDiv = document.createElement('div');
+            const newH4 = document.createElement('h4');
             const newH3 = document.createElement('h3');
             const newIMG = document.createElement('img');
             const newPTemp = document.createElement('p');
             const newPWind = document.createElement('p');
             const newPHumidex = document.createElement('p');
 
+            newH3.innerHTML = "5 Day Forecast:"
             newIMG.src = forecastIcon;
-            newH3.innerHTML = forecastDate;
+            newH4.innerHTML = resultDate;
             newPTemp.innerHTML = 'Temperature: ' + forecastTemp + ' °C';
             newPWind.innerHTML = 'Wind: ' + forecastWind;
             newPHumidex.innerHTML = 'Humidity: ' + forecastHumidity + '%';
@@ -143,29 +155,18 @@ function get5DayForecast(input) {
             newPWind.classList.add('data-content');
             newPHumidex.classList.add('data-content');
             newDiv.classList.add('forecast-card');
-            newDiv.append(newH3, newIMG, newPTemp, newPWind, newPHumidex);
+            newDiv.append(newH4, newIMG, newPTemp, newPWind, newPHumidex);
 
+            weatherCard.append(newH3);
             weatherCard.append(newDiv);
-
-
-
         })
         .catch(function (err) {
             console.error(err);
         });
 }
 
+// function iterateForecast (response) {
+//     console.log(response)
+//     let day = response.
 
-// fetch('https://api.openweathermap.org/data/3.0/onecall?lat=43.7001&lon=-79.4163&appid=cebf833bd004e8474d29b759620ba9d3&units=metric')
-//     .then(function (response) {
-//         return response.json();
-//     })
-//     .then(function (response) {
-//         console.log(response)
-
-
-
-//     })
-//     .catch(function (err) {
-//         console.error(err);
-//     });
+// }
