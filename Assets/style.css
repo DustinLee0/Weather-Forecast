@@ -56,3 +56,27 @@ ul .btn:hover {
     padding: 10px;
     margin: 10px;
 }
+
+.favourable {
+    width: fit-content;
+    height: fit-content;
+    background-color: rgba(0, 143, 48, 0.5);
+    padding: 5px;
+    border-radius: 20%;
+}
+
+.moderate {
+    width: fit-content;
+    height: fit-content;
+    background-color: rgba(242, 255, 0, 0.5);
+    padding: 5px;
+    border-radius: 20%;
+}
+
+.severe {
+    width: fit-content;
+    height: fit-content;
+    background-color: rgba(0, 143, 48, 0.5);
+    padding: 5px;
+    border-radius: 20%;
+}
