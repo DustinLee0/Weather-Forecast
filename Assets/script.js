@@ -3,36 +3,38 @@ const searchForm = document.querySelector("#search-form");
 const listCard = document.querySelector('#saved-list');
 const weatherCard = document.querySelector('#weather-card');
 const localSave = [];
+let getSave = [];
 
-searchForm.addEventListener('submit', saveInput);
+searchForm.addEventListener('submit', submitForm);
 
-function saveInput(e) {
+function submitForm(e) {
     e.preventDefault();
-    let input = document.querySelector('#search-input');
-    let savedInput = input.value;
-    
-    //save input string and push to an array to store
-    localSave.push(savedInput);
+    let search = document.querySelector('#search-input');
+    let input = search.value;
+    console.log(search)
+    console.log(input)
+
+    getSave = JSON.parse(localStorage.getItem('cityWeather'))
+
+
+    localSave.push(input);
     localStorage.setItem('cityWeather', JSON.stringify(localSave));
-    
+
     clearSearch();
-    savedCityList(savedInput);
-    getCurrentForecast(savedInput);
-    get5DayForecast(savedInput);
+    getCurrentForecast(input);
+    get5DayForecast(input);
+    const listEl = document.createElement('li');
+    listEl.textContent = input;
+    listEl.classList.add('btn', 'btn-primary');
+    listCard.appendChild(listEl);
+
+    search.value = "";
 }
 
 function clearSearch() {
     while (weatherCard.firstChild) {
         weatherCard.removeChild(weatherCard.children[0]);
     }
-}
-
-// creates list item per city in local storage
-function savedCityList(city) {
-    const listEl = document.createElement('li');
-    listEl.innerHTML = city;
-    listEl.classList.add('btn', 'btn-primary');
-    listCard.appendChild(listEl);
 }
 
 //  FIRST API CALL: fetch current forecast from city search
@@ -81,6 +83,7 @@ function getCurrentForecast(input) {
         })
         .catch(function (err) {
             console.error(err);
+            window.alert('Please enter a valid city.');
         });
 }
 
@@ -97,7 +100,8 @@ function oneCallAPI(latitude, longitude) {
             const newPUVIndex = document.createElement('p');
             const newSpan = document.createElement('span');
 
-            if (uvIndex < 3 ) {
+            //  favourable: 1-2; moderate: 3-5; severe:6-7
+            if (uvIndex < 3) {
                 newSpan.classList.add('favourable');
             } else if (uvIndex > 2 && uvIndex < 6) {
                 newSpan.classList.add('moderate');
@@ -110,10 +114,6 @@ function oneCallAPI(latitude, longitude) {
             newPUVIndex.classList.add('data-content');
             newPUVIndex.appendChild(newSpan);
             currentCard.append(newPUVIndex);
-
-
-            //  favourable: 1-2; moderate: 3-5; severe:6-7
-
         })
         .catch(function (err) {
             console.error(err);
@@ -127,47 +127,55 @@ function get5DayForecast(input) {
             return response.json();
         })
         .then(function (response) {
-            console.log(response);
-            // iterateForecast(response);
-            let forecastDate = response.list[3].dt_txt;;
-            let forecastIcon = `http://openweathermap.org/img/w/${response.list[3].weather[0].icon}.png`;
-            let forecastTemp = response.list[3].main.temp;
-            let forecastWind = response.list[3].wind.speed;
-            let forecastHumidity = response.list[3].main.humidity;
-            let newDate = forecastDate.split(" ");
-            let [year, month, day] = newDate[0].split("-");
-            const resultDate = [month, day, year].join("/")
-
-            const newDiv = document.createElement('div');
-            const newH4 = document.createElement('h4');
             const newH3 = document.createElement('h3');
-            const newIMG = document.createElement('img');
-            const newPTemp = document.createElement('p');
-            const newPWind = document.createElement('p');
-            const newPHumidex = document.createElement('p');
-
-            newH3.innerHTML = "5 Day Forecast:"
-            newIMG.src = forecastIcon;
-            newH4.innerHTML = resultDate;
-            newPTemp.innerHTML = 'Temperature: ' + forecastTemp + ' °C';
-            newPWind.innerHTML = 'Wind: ' + forecastWind;
-            newPHumidex.innerHTML = 'Humidity: ' + forecastHumidity + '%';
-            newPTemp.classList.add('data-content');
-            newPWind.classList.add('data-content');
-            newPHumidex.classList.add('data-content');
-            newDiv.classList.add('forecast-card');
-            newDiv.append(newH4, newIMG, newPTemp, newPWind, newPHumidex);
-
+            newH3.innerHTML = "5 Day Forecast:";
             weatherCard.append(newH3);
-            weatherCard.append(newDiv);
+            let div = document.createElement('div');
+            div.classList.add('row');
+
+            for (i = 0; i < response.list.length; i++) {
+                let Date = response.list[i].dt_txt;
+                let newDate = Date.split(" ");
+                console.log(newDate[1])
+                if(newDate[1] === '12:00:00'){
+                    console.log(response.list[i])
+
+                    let forecastIcon = `http://openweathermap.org/img/w/${response.list[i].weather[0].icon}.png`;
+                    let forecastTemp = response.list[i].main.temp;
+                    let forecastWind = response.list[i].wind.speed;
+                    let forecastHumidity = response.list[i].main.humidity;
+                    let forecastDate = response.list[i].dt_txt;
+                    let newDate = forecastDate.split(" ");
+                    let [year, month, day] = newDate[0].split("-");
+                    const resultDate = [month, day, year].join("/");
+        
+                    const newDiv = document.createElement('div');
+                    const newH4 = document.createElement('h4');
+                    const newIMG = document.createElement('img');
+                    const newPTemp = document.createElement('p');
+                    const newPWind = document.createElement('p');
+                    const newPHumidex = document.createElement('p');
+        
+                    newIMG.src = forecastIcon;
+                    newH4.innerHTML = resultDate;
+                    newPTemp.innerHTML = 'Temperature: ' + forecastTemp + ' °C';
+                    newPWind.innerHTML = 'Wind: ' + forecastWind;
+                    newPHumidex.innerHTML = 'Humidity: ' + forecastHumidity + '%';
+                    newPTemp.classList.add('data-content');
+                    newPWind.classList.add('data-content');
+                    newPHumidex.classList.add('data-content');
+                    newDiv.classList.add('forecast-card');
+                    newDiv.append(newH4, newIMG, newPTemp, newPWind, newPHumidex);
+                    
+                    div.append(newDiv);
+                }
+                weatherCard.append(div);
+            }
+
+
+
         })
         .catch(function (err) {
             console.error(err);
         });
 }
-
-// function iterateForecast (response) {
-//     console.log(response)
-//     let day = response.
-
-// }
