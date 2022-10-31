@@ -3,32 +3,51 @@ const searchForm = document.querySelector("#search-form");
 const listCard = document.querySelector('#saved-list');
 const weatherCard = document.querySelector('#weather-card');
 const localSave = [];
-let getSave = [];
 
 searchForm.addEventListener('submit', submitForm);
 
 function submitForm(e) {
     e.preventDefault();
+    clearSearch();
     let search = document.querySelector('#search-input');
     let input = search.value;
-    console.log(search)
-    console.log(input)
 
-    getSave = JSON.parse(localStorage.getItem('cityWeather'))
+    let getSave = JSON.parse(localStorage.getItem('cityWeather'));
 
+    if (getSave === null) {
+        getCurrentForecast(input);
+        get5DayForecast(input);
 
-    localSave.push(input);
-    localStorage.setItem('cityWeather', JSON.stringify(localSave));
+        localSave.push(input);
+        localStorage.setItem('cityWeather', JSON.stringify(localSave)); 
 
-    clearSearch();
-    getCurrentForecast(input);
-    get5DayForecast(input);
-    const listEl = document.createElement('li');
-    listEl.textContent = input;
-    listEl.classList.add('btn', 'btn-primary');
-    listCard.appendChild(listEl);
-
-    search.value = "";
+        const listEl = document.createElement('li');
+        listEl.textContent = input;
+        listEl.classList.add('btn', 'btn-primary');
+        listCard.appendChild(listEl);
+        
+        search.value = "";
+    } else {
+        for (i = 0; i < getSave.length; i++) {
+            if (getSave[i] == input) {
+                getCurrentForecast(input);
+                get5DayForecast(input);
+                search.value = "";
+                return;
+            } 
+        }
+        localSave.push(input);
+        localStorage.setItem('cityWeather', JSON.stringify(localSave));
+        
+        const listEl = document.createElement('li');
+        listEl.textContent = input;
+        listEl.classList.add('btn', 'btn-primary');
+        listCard.appendChild(listEl);
+        
+        getCurrentForecast(input);
+        get5DayForecast(input);
+        search.value = "";
+    }
 }
 
 function clearSearch() {
@@ -46,7 +65,6 @@ function getCurrentForecast(input) {
             return response.json();
         })
         .then(function (response) {
-            console.log(response)
             let cityName = response.name;
             let today = new Date().toLocaleDateString();
             let cityIcon = `http://openweathermap.org/img/w/${response.weather[0].icon}.png`;
@@ -84,6 +102,7 @@ function getCurrentForecast(input) {
         .catch(function (err) {
             console.error(err);
             window.alert('Please enter a valid city.');
+            return;
         });
 }
 
@@ -136,44 +155,38 @@ function get5DayForecast(input) {
             for (i = 0; i < response.list.length; i++) {
                 let Date = response.list[i].dt_txt;
                 let newDate = Date.split(" ");
-                console.log(newDate[1])
-                if(newDate[1] === '12:00:00'){
-                    console.log(response.list[i])
-
+                if (newDate[1] === '12:00:00') {
                     let forecastIcon = `http://openweathermap.org/img/w/${response.list[i].weather[0].icon}.png`;
                     let forecastTemp = response.list[i].main.temp;
-                    let forecastWind = response.list[i].wind.speed;
+                    let forecastWind = response.list[i].wind.speed * 3.6;
                     let forecastHumidity = response.list[i].main.humidity;
                     let forecastDate = response.list[i].dt_txt;
                     let newDate = forecastDate.split(" ");
                     let [year, month, day] = newDate[0].split("-");
                     const resultDate = [month, day, year].join("/");
-        
+
                     const newDiv = document.createElement('div');
                     const newH4 = document.createElement('h4');
                     const newIMG = document.createElement('img');
                     const newPTemp = document.createElement('p');
                     const newPWind = document.createElement('p');
                     const newPHumidex = document.createElement('p');
-        
+
                     newIMG.src = forecastIcon;
                     newH4.innerHTML = resultDate;
                     newPTemp.innerHTML = 'Temperature: ' + forecastTemp + ' °C';
-                    newPWind.innerHTML = 'Wind: ' + forecastWind;
+                    newPWind.innerHTML = 'Wind: ' + forecastWind.toFixed(2) + ' km/hr';
                     newPHumidex.innerHTML = 'Humidity: ' + forecastHumidity + '%';
                     newPTemp.classList.add('data-content');
                     newPWind.classList.add('data-content');
                     newPHumidex.classList.add('data-content');
                     newDiv.classList.add('forecast-card');
                     newDiv.append(newH4, newIMG, newPTemp, newPWind, newPHumidex);
-                    
+
                     div.append(newDiv);
                 }
                 weatherCard.append(div);
             }
-
-
-
         })
         .catch(function (err) {
             console.error(err);
