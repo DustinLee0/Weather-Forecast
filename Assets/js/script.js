@@ -6,6 +6,14 @@ const localSave = [];
 
 searchForm.addEventListener('submit', submitForm);
 
+listCard.addEventListener('click', (e) => {
+    e.preventDefault();
+    let event = e.target;
+    clearSearch();
+    getCurrentForecast(event.textContent);
+    get5DayForecast(event.textContent);
+})
+
 function submitForm(e) {
     e.preventDefault();
     clearSearch();
@@ -79,13 +87,13 @@ function getCurrentForecast(input) {
             const newPWind = document.createElement('p');
             const newPHumidex = document.createElement('p');
 
-            //  CURRENT FORECAST
+            
             newIMG.src = cityIcon;
             newIMG.classList.add('inline');
             newH2.innerHTML = cityName + ' ' + today + ' ';
             newH2.appendChild(newIMG);
             newDiv.append(newH2);
-            //  CURRENT FORECAST: CONTENT
+            
             newPTemp.innerHTML = 'Temperature: ' + cityTemp + ' °C';
             newPWind.innerHTML = 'Wind: ' + cityWind.toFixed(2) + ' km/hr';
             newPHumidex.innerHTML = 'Humidity: ' + cityHumidity + '%';
