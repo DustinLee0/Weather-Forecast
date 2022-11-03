@@ -6,6 +6,7 @@ const localSave = [];
 
 searchForm.addEventListener('submit', submitForm);
 
+//  if a search history button is clicked, will call the data with city name on button click and display 
 listCard.addEventListener('click', (e) => {
     e.preventDefault();
     let event = e.target;
@@ -22,6 +23,7 @@ function submitForm(e) {
 
     let getSave = JSON.parse(localStorage.getItem('cityWeather'));
 
+    //  if statement for first form submit because there will be no local save to get
     if (getSave === null) {
         getCurrentForecast(input);
         get5DayForecast(input);
@@ -36,6 +38,7 @@ function submitForm(e) {
         
         search.value = "";
     } else {
+        //  checks the local storage array to prevent same city being saved twice
         for (i = 0; i < getSave.length; i++) {
             if (getSave[i] == input) {
                 getCurrentForecast(input);
