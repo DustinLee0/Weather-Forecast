@@ -72,9 +72,7 @@ function getCurrentForecast(input) {
     const apiCall = 'https://api.openweathermap.org/data/2.5/weather?q=' + input + '&appid=' + apiKey + '&units=metric';
 
     fetch(apiCall)
-        .then(function (response) {
-            return response.json();
-        })
+        .then(response => {response.json()})
         .then(function (response) {
             let cityName = response.name;
             let today = new Date().toLocaleDateString();
@@ -163,6 +161,8 @@ function get5DayForecast(input) {
             let div = document.createElement('div');
             div.classList.add('row');
 
+            //  response comes back in an array of 40 results because each day is split into 3 hour intervals
+            //  iterates over array to find the index where it is 12:00pm at noon then uses data at that index
             for (i = 0; i < response.list.length; i++) {
                 let Date = response.list[i].dt_txt;
                 let newDate = Date.split(" ");
