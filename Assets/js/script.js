@@ -72,7 +72,9 @@ function getCurrentForecast(input) {
     const apiCall = 'https://api.openweathermap.org/data/2.5/weather?q=' + input + '&appid=' + apiKey + '&units=metric';
 
     fetch(apiCall)
-        .then(response => {response.json()})
+        .then(response => {
+            return  response.json()
+        })
         .then(function (response) {
             let cityName = response.name;
             let today = new Date().toLocaleDateString();
@@ -108,7 +110,7 @@ function getCurrentForecast(input) {
 
             oneCallAPI(response.coord.lat, response.coord.lon);
         })
-        .catch(function (err) {
+        .catch( (err) => {
             console.error(err);
             window.alert('Please enter a valid city.');
             return;
@@ -118,10 +120,10 @@ function getCurrentForecast(input) {
 // SECOND CALL TO GET UVI DATA FROM ONE CALL API 3.0 ENDPOINT
 function oneCallAPI(latitude, longitude) {
     fetch('https://api.openweathermap.org/data/3.0/onecall?lat=' + latitude + '&lon=' + longitude + '&appid=' + apiKey + '&units=metric')
-        .then(function (response) {
+        .then( (response) => {
             return response.json();
         })
-        .then(function (response) {
+        .then( (response) => {
             let currentCard = document.querySelector('.current-forecast');
             let uvIndex = response.current.uvi;
 
@@ -143,18 +145,16 @@ function oneCallAPI(latitude, longitude) {
             newPUVIndex.appendChild(newSpan);
             currentCard.append(newPUVIndex);
         })
-        .catch(function (err) {
-            console.error(err);
-        });
+        .catch( (err) => {console.error(err)});
 }
 
 // THIRD API CALL:  5 day forecast from city search
 function get5DayForecast(input) {
     fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + input + '&units=metric&appid=' + apiKey)
-        .then(function (response) {
+        .then( (response) => {
             return response.json();
         })
-        .then(function (response) {
+        .then( (response) => {
             const newH3 = document.createElement('h3');
             newH3.innerHTML = "5 Day Forecast:";
             weatherCard.append(newH3);
@@ -199,7 +199,5 @@ function get5DayForecast(input) {
                 weatherCard.append(div);
             }
         })
-        .catch(function (err) {
-            console.error(err);
-        });
+        .catch( (err) => {console.error(err)});
 }
